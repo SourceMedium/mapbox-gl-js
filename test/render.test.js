@@ -62,40 +62,6 @@ function renderTest(style, info, base, key) {
 
         var gl = map.painter.gl;
 
-        map.painter.prepareBuffers = function() {
-            var gl = this.gl;
-
-            if (!gl.renderbuffer) {
-                // Create default renderbuffer
-                gl.renderbuffer = gl.createRenderbuffer();
-                gl.bindRenderbuffer(gl.RENDERBUFFER, gl.renderbuffer);
-                gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA, gl.drawingBufferWidth, gl.drawingBufferHeight);
-            }
-
-            if (!gl.stencilbuffer) {
-                // Create default stencilbuffer
-                gl.stencilbuffer = gl.createRenderbuffer();
-                gl.bindRenderbuffer(gl.RENDERBUFFER, gl.stencilbuffer);
-                gl.renderbufferStorage(gl.RENDERBUFFER, gl.STENCIL_INDEX8, gl.drawingBufferWidth, gl.drawingBufferHeight);
-            }
-
-            if (!gl.framebuffer) {
-                // Create frame buffer
-                gl.framebuffer = gl.createFramebuffer();
-            }
-
-            gl.bindFramebuffer(gl.FRAMEBUFFER, gl.framebuffer);
-            gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, gl.renderbuffer);
-            gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.RENDERBUFFER, gl.stencilbuffer);
-
-            this.clearColor();
-        };
-
-        map.painter.bindDefaultFramebuffer = function() {
-            var gl = this.gl;
-            gl.bindFramebuffer(gl.FRAMEBUFFER, gl.framebuffer);
-        };
-
         var watchdog = setTimeout(function() {
             t.fail('timed out after 20 seconds');
             t.end();
@@ -111,7 +77,9 @@ function renderTest(style, info, base, key) {
 
             var png = new PNG({width: w, height: h});
 
-            gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, png.data);
+            var pixels = new Uint8Array(png.data.length);
+            gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+            png.data = new Buffer(pixels);
 
             map.remove();
             gl.destroy();
