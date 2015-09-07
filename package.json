@@ -46,7 +46,7 @@
     "watchify": "^3.2.2"
   },
   "optionalDependencies": {
-    "gl": "git+https://github.com/ansis/headless-gl.git#216a2c5ab683952db3184e1ae8ba8a90ed20339a"
+    "gl": "^2.1.2"
   },
   "browserify": {
     "transform": [

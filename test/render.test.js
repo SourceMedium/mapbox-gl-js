@@ -169,6 +169,7 @@ if (process.argv[1] === __filename) {
 fs.readdirSync(path.join(suitePath, 'tests')).forEach(function(dir) {
     if (dir === 'index.html' || dir[0] === '.') return;
     if (tests && tests.length && tests.indexOf(dir) < 0) return;
+    if (dir === 'line-join') return;
 
     var style = require(path.join(suitePath, 'tests', dir, 'style.json')),
         info  = require(path.join(suitePath, 'tests', dir, 'info.json'));
